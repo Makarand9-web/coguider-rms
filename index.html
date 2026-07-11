@@ -425,12 +425,7 @@ tr:hover td{background:#fafbfd;}
         <div class="loginTitle">Resource &amp; Billing Management System</div>
         <div class="loginError" id="loginError"></div>
 
-        <div class="tabsRow" style="margin-bottom:18px;">
-          <button class="tabBtn active" id="loginTabQuick" onclick="setLoginMode('quick')">Quick Demo Login</button>
-          <button class="tabBtn" id="loginTabPwd" onclick="setLoginMode('password')">Email &amp; Password</button>
-        </div>
-
-        <div id="loginModeQuick">
+        <div id="loginModeQuick" style="display:none;">
           <div class="field">
             <label>Tenant / Company</label>
             <select id="loginTenant"></select>
@@ -439,11 +434,10 @@ tr:hover td{background:#fafbfd;}
             <label>Login as (demo user)</label>
             <select id="loginUser"></select>
           </div>
-          <button class="btnPrimary" onclick="doLogin()">Log In</button>
           <div class="loginHint">Demo build: pick any user from the dropdown to explore that role's view. Data is stored locally in this browser only.</div>
         </div>
 
-        <div id="loginModePassword" style="display:none;">
+        <div id="loginModePassword">
           <div class="field">
             <label>Email</label>
             <input type="email" id="loginEmail" placeholder="you@company.com">
@@ -1072,21 +1066,18 @@ function saveNewTenant(){
   boot();
 }
 function setLoginMode(mode){
-  document.getElementById('loginTabQuick').classList.toggle('active', mode==='quick');
-  document.getElementById('loginTabPwd').classList.toggle('active', mode==='password');
-  document.getElementById('loginModeQuick').style.display = mode==='quick'?'block':'none';
-  document.getElementById('loginModePassword').style.display = mode==='password'?'block':'none';
+  const tabQuick = document.getElementById('loginTabQuick');
+  const tabPwd = document.getElementById('loginTabPwd');
+  if(tabQuick) tabQuick.classList.toggle('active', mode==='quick');
+  if(tabPwd) tabPwd.classList.toggle('active', mode==='password');
+  document.getElementById('loginModeQuick').style.display = 'none';
+  document.getElementById('loginModePassword').style.display = 'block';
   document.getElementById('loginError').textContent='';
 }
 
 function doLogin(){
-  const tenantId = document.getElementById('loginTenant').value;
-  const userId = document.getElementById('loginUser').value;
-  const user = DB.users.find(u=>u.id===userId);
-  if(!user){ document.getElementById('loginError').textContent='Please select a user.'; return; }
-  setSession({ tenantId, userId });
-  document.getElementById('loginError').textContent='';
-  boot();
+  // Password-less demo login has been disabled. Use doLoginWithPassword() instead.
+  document.getElementById('loginError').textContent='Please use Email & Password to log in.';
 }
 /* ===================== SUPABASE → LOCAL DB MAPPING (Masters) ===================== */
 /* Supabase columns are snake_case; the rest of this app expects camelCase fields on
